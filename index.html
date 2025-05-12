@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="">
+
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+
+    <style>
+        .max_width {
+            width: 100%;
+        }
+
+        .flex {
+            align-items: center;
+            justify-content: space-around;
+            display: flex;
+        }
+
+        .center_text {
+            text-align: center;
+        }
+    </style>
+
+    <body>
+        <form action="">
+            <input type="radio" name="roulette_type" id="one_fifty" checked>
+            <label for="one_fifty">1-50</label>
+            <input type="radio" name="roulette_type" id="two_hundred">
+            <label for="two_hundred">2-100</label>
+            <input type="radio" name="roulette_type" id="five_twohundred">
+            <label for="five_twohundred">5-200</label>
+
+            <div class="flex">
+                <div>
+                    <h1>Tier</h1>
+                    <p>plays for</p>
+                    <h2 id="tier_play"></h2>
+                    <p>remainder</p>
+                    <h3 id="tier_remainder"></h3>
+                </div>
+                <div>
+                    <h1>Orpheline</h1>
+                    <p>plays for</p>
+                    <h2 id="orpheline_play"></h2>
+                    <p>remainder</p>
+                    <h3 id="orpheline_remainder"></h3>
+                </div>
+                <div>
+                    <h1>Vazon</h1>
+                    <p>plays for</p>
+                    <h2 id="vazon_play"></h2>
+                    <p>remainder</p>
+                    <h3 id="vazon_remainder"></h3>
+                </div>
+                <div>
+                    <h1>Spiel</h1>
+                    <p>plays for</p>
+                    <h2 id="spiel_play"></h2>
+                    <p>remainder</p>
+                    <h3 id="spiel_remainder"></h3>
+                </div>
+            </div>
+
+            <h1 class="center_text" id="label"></h1>
+            <input class="max_width" type="range" name="bar" value="270" id="slider" min="20" max="2000" step="5"
+                list="markers">
+            <datalist id="markers">
+                <option value="250" label="250"></option>
+                <option value="675" label="675"></option>
+                <option value="200" label="200"></option>
+                <option value="600" label="600"></option>
+                <option value="450" label="450"></option>
+                <option value="850" label="850"></option>
+                <option value="350" label="350"></option>
+            </datalist>
+        </form>
+    </body>
+
+    <script type="module">
+        import { tier, orpheline, vazon, spiel } from "./util.js";
+
+        addEventListener('load', update_counter)
+        addEventListener('input', update_counter)
+
+        function update_counter(e) {
+            console.log(e);
+            const value = parseInt(document.getElementById("slider").value)
+            document.getElementById("label").innerHTML = value
+
+            let max_SU = null
+            const datalist = document.getElementById("markers")
+            const markers_should_change = e.type == "load" || e.target.name == "roulette_type"
+            if (markers_should_change) datalist.innerHTML = ""
+            if (document.getElementById("one_fifty").checked) {
+                max_SU = 50
+                if (markers_should_change)
+                    Array.of(250, 675, 200, 600, 450, 850, 350).forEach(element => add_element(datalist, "option", null, { "value": element }))
+            } else if (document.getElementById("two_hundred").checked) {
+                max_SU = 100
+                if (markers_should_change)
+                    Array.of(500, 1350, 400, 1200, 900, 1700, 700).forEach(element => add_element(datalist, "option", null, { "value": element }))
+            } else if (document.getElementById("five_twohundred").checked) {
+                max_SU = 200
+                if (markers_should_change)
+                    Array.of(1000, 2700, 800, 2400, 1800, 3400, 1400).forEach(element => add_element(datalist, "option", null, { "value": element }))
+            }
+            document.getElementById("tier_play").innerHTML = tier.get_bet(value, max_SU)
+            document.getElementById("tier_remainder").innerHTML = tier.get_remainder(value, max_SU)
+            document.getElementById("orpheline_play").innerHTML = orpheline.get_bet(value, max_SU)
+            document.getElementById("orpheline_remainder").innerHTML = orpheline.get_remainder(value, max_SU)
+            document.getElementById("vazon_play").innerHTML = vazon.get_bet(value, max_SU)
+            document.getElementById("vazon_remainder").innerHTML = vazon.get_remainder(value, max_SU)
+            document.getElementById("spiel_play").innerHTML = spiel.get_bet(value, max_SU)
+            document.getElementById("spiel_remainder").innerHTML = spiel.get_remainder(value, max_SU)
+        }
+        function add_element(parent, child_type, text = null, attributes = null, namespace = null) {
+            let element;
+            if (namespace != null) {
+                element = document.createElementNS(namespace, child_type)
+            } else {
+                element = document.createElement(child_type)
+            }
+            if (attributes != null) {
+                for (const key in attributes) {
+                    element.setAttribute(key, attributes[key])
+                }
+            }
+            if (text != null) {
+                element.textContent = text
+            }
+            parent.appendChild(element)
+        }
+    </script>
+
+</html>
