@@ -68,13 +68,6 @@
             <input class="max_width" type="range" name="bar" value="270" id="slider" min="20" max="2000" step="5"
                 list="markers">
             <datalist id="markers">
-                <option value="250" label="250"></option>
-                <option value="675" label="675"></option>
-                <option value="200" label="200"></option>
-                <option value="600" label="600"></option>
-                <option value="450" label="450"></option>
-                <option value="850" label="850"></option>
-                <option value="350" label="350"></option>
             </datalist>
         </form>
     </body>
@@ -86,7 +79,6 @@
         addEventListener('input', update_counter)
 
         function update_counter(e) {
-            console.log(e);
             const value = parseInt(document.getElementById("slider").value)
             document.getElementById("label").innerHTML = value
 
